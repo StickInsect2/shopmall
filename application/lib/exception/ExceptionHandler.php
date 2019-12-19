@@ -1,10 +1,10 @@
 <?php
+
 namespace app\lib\exception;
 
 use think\exception\Handle;
 use think\Log;
 use think\Request;
-use Exception;
 
 /*
  * 重写Handle的render方法，实现自定义异常消息
@@ -15,7 +15,7 @@ class ExceptionHandler extends Handle {
     private $msg;
     private $errorCode;
 
-    public function render(Exception $e) {
+    public function render(\Exception $e) {
         if ($e instanceof BaseException) {
             //如果是自定义异常，则控制http状态码，不需要记录日志
             //因为这些通常是因为客户端传递参数错误或者是用户请求造成的异常
@@ -50,7 +50,7 @@ class ExceptionHandler extends Handle {
     /*
      * 将异常写入日志
      */
-    private function recordErrorLog(Exception $e) {
+    private function recordErrorLog(\Exception $e) {
         Log::init([
             'type' => 'File',
             'path' => LOG_PATH,

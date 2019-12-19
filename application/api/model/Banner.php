@@ -4,17 +4,15 @@
 namespace app\api\model;
 
 
-use think\Exception;
+use think\Db;
 
 class Banner {
-    public static function  getBannerByID($id){
-        //根据id获取banner信息
-        try{
-            1/0;
-        }catch (Exception $ex){
-         //TODO: 可以记录日志
-            throw $ex;
-        }
-        return "this is banner info";
+    public static function getBannerByID($id) {
+//        $result = Db::query('select * from banner_item where banner_id=?',[$id]);
+        $result = Db::table('banner_item')
+            ->where(function ($query) use ($id){
+                $query->where('banner_id', '=', $id);
+            })->select();
+        return $result;
     }
 }
