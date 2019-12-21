@@ -4,9 +4,7 @@
 namespace app\api\model;
 
 
-use think\Model;
-
-class Banner extends Model{
+class Banner extends BaseModel {
 
     public function items(){
         return $this->hasMany('BannerItem','banner_id','id');
