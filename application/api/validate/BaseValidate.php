@@ -18,21 +18,20 @@ class BaseValidate extends Validate {
 
         $request = Request::instance();
         $params = $request->param();
-        $result = $this->batch()->check($params);
-        if (!$result) {
 
-           $e = new ParameterException([
-               'msg'=>$this->error
-           ]);
-           throw $e;
 
-        } else {
-            return true;
+        if (!$this->check($params)) {
+
+            $exception = new ParameterException([
+                'msg' => $this->error
+            ]);
+            throw $exception;
         }
+        return true;
     }
 
-    protected function isPositiveInteger($value, $rule='', $data='', $field='')
-    {
+    protected function isPositiveInteger($value, $rule = '', $data = '', $field = '') {
+
         if (is_numeric($value) && is_int($value + 0) && ($value + 0) > 0) {
             return true;
         }

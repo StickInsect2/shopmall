@@ -12,7 +12,6 @@
 // [ 应用入口文件 ]
 
 // 定义应用目录
-use think\Log;
 
 define('APP_PATH', __DIR__ . '/../application/');
 //重新定义日志记录的位置
