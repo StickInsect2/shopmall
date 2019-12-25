@@ -2,9 +2,7 @@
 
 namespace app\api\validate;
 
-use app\lib\exception\BaseException;
 use app\lib\exception\ParameterException;
-use think\Exception;
 use think\Request;
 use think\Validate;
 
@@ -36,5 +34,13 @@ class BaseValidate extends Validate {
             return true;
         }
         return false;
+    }
+
+    public function isNotEmpty($value, $rule = '', $data = '', $field = '') {
+        if (empty($value)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
