@@ -8,6 +8,7 @@ use app\lib\exception\CategoryException;
 
 class Category {
 
+    //获取所有的一级分类
     public function getAllCategory(){
         $result = CategoryModel::all([],'img');
         if($result->isEmpty()){

@@ -14,6 +14,14 @@ class Product extends BaseModel {
         return $this->prefixImgUrl($value, $data);
     }
 
+    public function img() {
+        return $this->hasMany('ProductImage', 'product_id', 'id');
+    }
+
+    public function properties() {
+        return $this->hasMany('ProductProperty', 'product_id', 'id');
+    }
+
     public static function getMostRecent($count) {
         $products = self::limit($count)
             ->order('create_time desc')
@@ -21,8 +29,21 @@ class Product extends BaseModel {
         return $products;
     }
 
-    public static function getProductsByCategory($categoryID){
-        $products = self::where('category_id','=',$categoryID)->select();
+    public static function getProductsByCategory($categoryID) {
+        $products = self::where('category_id', '=', $categoryID)->select();
         return $products;
+    }
+
+    public static function getProductDetail($productID) {
+        //Query
+        //对关联模型img下的属性order做排序就需要用到闭包函数构建查询器。
+        $productDetail = self::with([
+            'img' => function ($query) {
+                $query->with(['imgUrl'])->order('order', 'asc');
+            }
+        ])
+            ->with(['properties'])
+            ->find($productID);
+        return $productDetail;
     }
 }
