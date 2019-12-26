@@ -3,15 +3,18 @@
 
 namespace app\api\controller\v1;
 
-
+use app\api\controller\BaseController;
 use app\api\model\User as UserModel;
-use app\api\validate\AddressNew;
 use app\api\service\Token as TokenService;
+use app\api\validate\AddressNew;
 use app\lib\exception\SuccessMessage;
 use app\lib\exception\UserException;
 
+class Address extends BaseController {
+    protected $beforeActionList = [
+        'checkPrimaryScope' => ['only' => 'createOrUpdateAddress']
+    ];
 
-class Address {
 
     public function createOrUpdateAddress() {
 
@@ -40,6 +43,6 @@ class Address {
         }
 //        return $user;
         //返回更新成功的提示信息
-        return json(new SuccessMessage(),201);
+        return json(new SuccessMessage(), 201);
     }
 }

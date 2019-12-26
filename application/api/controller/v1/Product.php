@@ -43,4 +43,8 @@ class Product {
         }
         return $productDetail;
     }
+
+    public function deleteOne($id){
+
+    }
 }

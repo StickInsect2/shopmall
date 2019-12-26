@@ -4,6 +4,7 @@
 namespace app\api\service;
 
 
+use app\lib\enum\ScopeEnum;
 use app\lib\exception\TokenException;
 use app\lib\exception\WeChatException;
 use app\api\model\User as UserModel;
@@ -79,10 +80,10 @@ class UserToken extends Token {
 
         //使用tp5自带的缓存(默认文件的缓存机制)
         $request = cache($key, $value, $expire_in);
-        if(!$request){
+        if (!$request) {
             throw new TokenException([
-                'msg'=>'服务器缓存异常',
-                'errorCode'=>10005
+                'msg' => '服务器缓存异常',
+                'errorCode' => 10005
             ]);
         }
         return $key;
@@ -92,7 +93,9 @@ class UserToken extends Token {
     private function prepareCachedValue($wxResult, $uid) {
         $cachedValue = $wxResult;
         $cachedValue['uid'] = $uid;
-        $cachedValue['scope'] = 16;
+        $cachedValue['scope'] = ScopeEnum::User;
+        //scope =16 代表不同的用户
+        //scope = 32表示管理员（CMS）用户权限
         return $cachedValue;
     }
 
