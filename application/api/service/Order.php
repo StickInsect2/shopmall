@@ -37,7 +37,9 @@ class Order {
         //第六步 开始创建订单
         //订单的快照
         $orderSnap = $this->snapOrder($status);
-
+        $order = $this->createOrder($orderSnap);
+        $order['pass'] = true;
+        return $order;
     }
 
     //第九步 ，生成订单并存入数据库
@@ -127,7 +129,7 @@ class Order {
                 $status['pass'] = false;
             }
             $status['orderPrice'] += $pStatus['totalPrice'];
-            $status['totalPrice'] += $pStatus['count'];
+            $status['totalCount'] += $pStatus['count'];
             array_push($status['pStatusArray'], $pStatus);
         }
         return $status;
