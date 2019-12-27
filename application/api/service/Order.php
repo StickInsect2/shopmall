@@ -194,4 +194,18 @@ class Order {
                 '%02d', rand(0, 99));
         return $orderSn;
     }
+
+    //这里是在微信支付的时候要再次调用库存量经检测的方法，所以提供一个对外的方法供service\pay.php来调用
+    public function checkOrderStock($orderID) {
+        //根据$orderID拿到对应的$oProducts和$products两组数据就可以进行库存量的检测
+        //1，根据$orderID去OrderProduct表中查询就可以拿到$oProducts；
+        //2，根据上面我们已经拆分的getProductsByOrder方法，传入$oProducts就可以得到$products
+        $oProducts = OrderProduct::where('order_id', '=', $orderID)->select();
+        $this->oProducts = $oProducts;
+        $this->products = $this->getProductsByOrder($oProducts);
+        //调用库存量检测方法
+        $status = $this->getOrderStatus();
+        return $status;
+    }
+
 }

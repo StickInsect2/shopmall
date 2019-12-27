@@ -98,4 +98,17 @@ class Token {
         }
     }
 
+    //检测被检测的uid和令牌里面的uid是否是同一个（在微信支付的接口中要检测订单号和当前用户是否是匹配的）
+    public static function isValidOperate($checkedUID)
+    {
+        if(!$checkedUID){
+            throw new Exception('检查UID时必须传入一个被检查的UID');
+        }
+        $currentOperateUID = self::getCurrentUid();
+        if($currentOperateUID == $checkedUID){
+            return true;
+        }
+        return false;
+    }
+
 }
