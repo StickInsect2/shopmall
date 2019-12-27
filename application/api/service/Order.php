@@ -8,6 +8,7 @@ use app\api\model\UserAddress;
 use app\lib\exception\OrderException;
 use app\lib\exception\UserException;
 use app\api\model\Order as OrderModel;
+use think\Db;
 use think\Exception;
 
 class Order {
@@ -44,6 +45,7 @@ class Order {
 
     //第九步 ，生成订单并存入数据库
     private function createOrder($snap) {
+        Db::startTrans();
         try {
             //首先生成订单号
             $orderNo = $this->makeOrderNo();
@@ -66,12 +68,14 @@ class Order {
             }
             $orderProduct = new OrderProduct();
             $orderProduct->saveAll($this->oProducts);
+            Db::commit();
             return [
                 'order_no' => $orderNo,
                 'order_id' => $orderID,
                 'create_time' => $create_time
             ];
         } catch (Exception $e) {
+            Db::rollback();
             throw  $e;
         }
     }
