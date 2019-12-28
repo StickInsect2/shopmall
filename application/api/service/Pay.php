@@ -62,7 +62,7 @@ class Pay {
         $wxOrderData->SetTotal_fee($totalPrice * 100);
         $wxOrderData->SetBody('零食商贩');
         $wxOrderData->SetOpenid($openid);
-        $wxOrderData->SetNotify_url('微信返回结构的公网接收地址');
+        $wxOrderData->SetNotify_url(config(secure.pay_back_url));
 
         return $this->getPaySignature($wxOrderData);
     }
