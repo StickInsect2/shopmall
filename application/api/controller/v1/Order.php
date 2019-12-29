@@ -7,6 +7,8 @@ use app\api\controller\BaseController;
 use app\api\validate\OrderPlace;
 use app\api\service\Token as TokenService;
 use app\api\service\Order as OrderService;
+use app\api\validate\PageParameter;
+use app\api\model\Order as OrderModel;
 
 class Order extends BaseController {
 
@@ -22,7 +24,8 @@ class Order extends BaseController {
     //成功：进行库存量的扣除  失败：返回一个支付失败的结果（无论成功）
 
     protected $beforeActionList = [
-        'checkExclusiveScope' => ['only' => 'PlaceOrder']
+        'checkExclusiveScope' => ['only' => 'PlaceOrder'],
+        'checkPrimaryScope' => ['only' => 'getSummaryByUser'],
     ];
 
     public function PlaceOrder() {
@@ -35,6 +38,28 @@ class Order extends BaseController {
         return $status;
     }
 
+    //分页
+    public function getSummaryByUser($page = 1, $size = 15) {
+        (new PageParameter())->goCheck();
+        $uid = TokenService::getCurrentUid();
+        $pagingOrders = OrderModel::getSummaryByUser($uid, $page, $size);
+        if ($pagingOrders->isEmpty()) {
+            return [
+                'data' => [],
+                'current_page' => $pagingOrders->currentPage()
+            ];
+        }
+//        $collection = collection($pagingOrders->items());
+//        $data = $collection->hidden(['snap_items', 'snap_address'])
+//            ->toArray();
+        $data = $pagingOrders->hidden(['snap_items', 'snap_address'])
+            ->toArray();
+        return [
+            'current_page' => $pagingOrders->currentPage(),
+            'data' => $data
+        ];
+
+    }
 
 
 }
