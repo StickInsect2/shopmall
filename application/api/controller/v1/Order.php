@@ -4,11 +4,13 @@
 namespace app\api\controller\v1;
 
 use app\api\controller\BaseController;
+use app\api\validate\IDMustBePositiveInt;
 use app\api\validate\OrderPlace;
 use app\api\service\Token as TokenService;
 use app\api\service\Order as OrderService;
 use app\api\validate\PageParameter;
 use app\api\model\Order as OrderModel;
+use app\lib\exception\OrderException;
 
 class Order extends BaseController {
 
@@ -25,7 +27,7 @@ class Order extends BaseController {
 
     protected $beforeActionList = [
         'checkExclusiveScope' => ['only' => 'PlaceOrder'],
-        'checkPrimaryScope' => ['only' => 'getSummaryByUser'],
+        'checkPrimaryScope' => ['only' => 'getDetail,getSummaryByUser'],
     ];
 
     public function PlaceOrder() {
@@ -59,6 +61,16 @@ class Order extends BaseController {
             'data' => $data
         ];
 
+    }
+
+    //获取订单详情接口
+    public function getDetail($id) {
+        (new IDMustBePositiveInt())->goCheck();
+        $orderDetail = OrderModel::get($id);
+        if (!$orderDetail) {
+            throw new OrderException();
+        }
+        return $orderDetail->hidden(['prepay_id']);
     }
 
 
