@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'img_prefix' => 'localhost/backmall/public/images',
-    'token_expire_in' => 1800000
+    'img_prefix' => 'http://localhost/backmall/public/images',
+    'token_expire_in' => 72000
 ];

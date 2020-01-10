@@ -53,6 +53,38 @@ class Token {
         return $uid;
     }
 
+    /**
+     * 从缓存中获取当前用户指定身份标识
+     * @param array $keys
+     * @return array result
+     * @throws \app\lib\exception\TokenException
+     */
+    public static function getCurrentIdentity($keys)
+    {
+        $token = Request::instance()
+            ->header('token');
+        $identities = Cache::get($token);
+        //cache 助手函数有bug
+//        $identities = cache($token);
+        if (!$identities)
+        {
+            throw new TokenException();
+        }
+        else
+        {
+            $identities = json_decode($identities, true);
+            $result = [];
+            foreach ($keys as $key)
+            {
+                if (array_key_exists($key, $identities))
+                {
+                    $result[$key] = $identities[$key];
+                }
+            }
+            return $result;
+        }
+    }
+
 
     //验证token是否合法或者是否过期
     //验证器验证只是token验证的一种方式
@@ -109,6 +141,17 @@ class Token {
             return true;
         }
         return false;
+    }
+
+    public static function verifyToken($token)
+    {
+        $exist = Cache::get($token);
+        if($exist){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 }

@@ -1,15 +1,22 @@
 <?php
 
-
 namespace app\api\controller\v1;
 
-
-use app\api\validate\Count;
 use app\api\model\Product as ProductModel;
+use app\api\validate\Count;
 use app\api\validate\IDMustBePositiveInt;
+use app\api\validate\PagingParameter;
+use app\lib\exception\ParameterException;
 use app\lib\exception\ProductException;
+use app\lib\exception\ThemeException;
+use think\Controller;
 
-class Product {
+class Product extends Controller {
+
+    protected $beforeActionList = [
+        'checkSuperScope' => ['only' => 'createOne,deleteOne']
+    ];
+
 
     //最近新品
     public function getRecent($count = 15) {
@@ -19,7 +26,7 @@ class Product {
         if ($result->isEmpty()) {
             throw  new ProductException();
         }
-        $result = $result->hidden(['summary']);
+        $result = $result->hidden(['summary'])->toArray();
         return $result;
     }
 
@@ -30,7 +37,7 @@ class Product {
         if ($products->isEmpty()) {
             throw new ProductException();
         }
-        $products = $products->hidden(['summary']);
+        $products = $products->hidden(['summary'])->toArray();
         return $products;
     }
 
@@ -44,7 +51,14 @@ class Product {
         return $productDetail;
     }
 
-    public function deleteOne($id){
+    public function createOne()
+    {
+        $product = new ProductModel();
+        $product->save(['id' => 1]);
+    }
 
+    public function deleteOne($id)
+    {
+        ProductModel::destroy($id);
     }
 }

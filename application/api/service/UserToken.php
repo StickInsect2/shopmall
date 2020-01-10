@@ -36,7 +36,6 @@ class UserToken extends Token {
             throw new Exception('获取session_key及openID时异常，微信内部错误');
         } else {
             $loginFail = array_key_exists('errcode', $wxResult);
-            echo '$loginFail这里';
             if ($loginFail) {
                 $this->processLoginError($wxResult);
             } else {
@@ -56,7 +55,6 @@ class UserToken extends Token {
         $openid = $wxResult['openid'];
 
         $user = UserModel::getByOpenID($openid);
-
         if ($user) {
             $uid = $user->id;
         } else {
@@ -64,6 +62,7 @@ class UserToken extends Token {
             $uid = $this->newUser($openid);
         }
         $cachedValue = $this->prepareCachedValue($wxResult, $uid);
+
         $token = $this->saveToCache($cachedValue);
         return $token;
 
